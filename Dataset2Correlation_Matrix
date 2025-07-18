@@ -25,7 +25,7 @@ else:
     correlation_matrix = data.corr(method='pearson')
 
     # In ra ma trận
-    print("\n📌 Ma trận tương quan Pearson:")
+    print("\n Ma trận tương quan Pearson:")
     print(correlation_matrix)
 
     # Vẽ heatmap
