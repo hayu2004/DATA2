@@ -1,0 +1,62 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Đọc dữ liệu
+data = pd.read_csv('Dataset2.csv')
+
+# Làm sạch dữ liệu: chuyển dấu phẩy và ép kiểu cho tất cả các cột object
+for col in data.columns:
+    if data[col].dtype == object:
+        data[col] = data[col].replace({',': '.'}, regex=True)
+        data[col] = pd.to_numeric(data[col], errors='coerce')
+
+# In số dòng trước và sau khi làm sạch
+print(f"Số dòng trước khi dropna: {len(data)}")
+data = data.dropna()
+print(f"Số dòng sau khi dropna: {len(data)}")
+
+# Kiểm tra nếu dataframe còn dữ liệu
+if data.empty:
+    print("⚠️ Dữ liệu bị rỗng sau khi làm sạch. Không thể tính ma trận tương quan.")
+else:
+    # Tính ma trận tương quan Pearson
+    correlation_matrix = data.corr(method='pearson')
+
+    # In ra ma trận
+    print("\n📌 Ma trận tương quan Pearson:")
+    print(correlation_matrix)
+
+    # Vẽ heatmap
+    plt.figure(figsize=(12, 10))
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1, center=0, fmt='.2f', linewidths=0.5)
+    plt.title('Dataset2 Correlation Matrix (Pearson)', fontsize=16)
+    plt.tight_layout()
+    plt.savefig('correlation_matrix.png')
+    plt.show()
+
+
+
+Số dòng trước khi dropna: 174
+Số dòng sau khi dropna: 174
+
+Ma trận tương quan Pearson:
+             c_d     ce_cs     ce_sg       f_q      f_sg       c_q  ...       p_q      p_ts      p_sg     slump    c_sg.1      c_cs
+c_d     1.000000 -0.169243  0.239195 -0.289381  0.060047 -0.010478  ... -0.046534 -0.081226  0.036532  0.053841  0.111613 -0.026713
+ce_cs  -0.169243  1.000000  0.383246  0.022111  0.568575  0.423651  ... -0.014865 -0.104158  0.402279  0.106261  0.160080  0.277365
+ce_sg   0.239195  0.383246  1.000000  0.149583  0.494596  0.182085  ...  0.001604  0.070695  0.491365 -0.051249  0.334024  0.278435
+f_q    -0.289381  0.022111  0.149583  1.000000  0.082163 -0.505125  ... -0.280199 -0.397681  0.013504  0.025990  0.425768  0.083410
+f_sg    0.060047  0.568575  0.494596  0.082163  1.000000  0.127638  ...  0.037691 -0.134731  0.156583 -0.132530  0.156415  0.272179
+c_q    -0.010478  0.423651  0.182085 -0.505125  0.127638  1.000000  ... -0.360375  0.352984  0.122970  0.172201  0.033148  0.398277
+c_sg   -0.010558  0.126664  0.258307  0.327076  0.084975 -0.179969  ... -0.120798 -0.469877 -0.049993  0.142691  0.464253  0.223908
+w       0.499895 -0.343290  0.263942  0.008737 -0.129524 -0.348276  ...  0.047258 -0.011470  0.103853  0.087883  0.136262 -0.173630
+w/c    -0.478414 -0.162608  0.042700  0.341332 -0.201758 -0.360318  ...  0.079445  0.060755  0.057028  0.058138  0.043048 -0.150408
+p_q    -0.046534 -0.014865  0.001604 -0.280199  0.037691 -0.360375  ...  1.000000  0.115173  0.121081 -0.332539 -0.470314 -0.499401
+p_ts   -0.081226 -0.104158  0.070695 -0.397681 -0.134731  0.352984  ...  0.115173  1.000000 -0.030198  0.012002 -0.288689  0.179802
+p_sg    0.036532  0.402279  0.491365  0.013504  0.156583  0.122970  ...  0.121081 -0.030198  1.000000 -0.088495  0.212028 -0.143313
+slump   0.053841  0.106261 -0.051249  0.025990 -0.132530  0.172201  ... -0.332539  0.012002 -0.088495  1.000000  0.073069  0.261412
+c_sg.1  0.111613  0.160080  0.334024  0.425768  0.156415  0.033148  ... -0.470314 -0.288689  0.212028  0.073069  1.000000  0.321174
+c_cs   -0.026713  0.277365  0.278435  0.083410  0.272179  0.398277  ... -0.499401  0.179802 -0.143313  0.261412  0.321174  1.000000
+
+[15 rows x 15 columns]
